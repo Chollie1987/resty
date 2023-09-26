@@ -6,12 +6,20 @@ const Form = (props) => {
     method:'GET',
     url: 'https://pokeapi.co/api/v2/pokemon',
   };
-  return (
-    handleSubmit = e => {
+
+  const handleSubmit = (e) => {
       e.preventDefault();
         props.handleApiCall(formData);
-    })
-      <div>
+    };
+     
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({...form, [name]: value });
+    
+  };
+  
+  return(
+  <div>
       <form onSubmit={handleSubmit}>
         <label >
           <span>URL: </span>
