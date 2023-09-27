@@ -1,11 +1,11 @@
-import React from 'react'
+import React, {useState} from 'react'
 import './Form.scss';
 
 const Form = (props) => {
-  const formData = {
+  const [formData, setFormData] = useState( {
     method:'GET',
     url: 'https://pokeapi.co/api/v2/pokemon',
-  };
+  });
 
   const handleSubmit = (e) => {
       e.preventDefault();
@@ -14,24 +14,30 @@ const Form = (props) => {
      
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({...form, [name]: value });
+    console.log(name, value);
+    setFormData({...formData, [name]: value });
     
   };
-  
+  console.log(formData);
   return(
   <div>
       <form onSubmit={handleSubmit}>
         <label >
           <span>URL: </span>
-          <input name='url' type='text' />
+          <input onChange={handleInputChange} name='url' type='text' value={formData.url} />
           <button type="submit">GO!</button>
         </label>
         <label className="methods">
-          <span id="get">GET</span>
-          <span id="post">POST</span>
-          <span id="put">PUT</span>
-          <span id="delete">DELETE</span>
+          <span onClick= {() => handleInputChange({target:{name:'method', value:'GET'}})}id="get">GET</span>
+          <span onClick={() => handleInputChange({target:{name:'method', value:'POST'}})} id="post">POST</span>
+          <span onClick={() => handleInputChange({ target: { name: 'method', value: 'PUT' } })} id="put">PUT</span>
+          <span onClick={() => handleInputChange({ target: { name: 'method', value: 'DELETE' } })} id="delete">DELETE</span>
         </label>
+        {(formData.method === 'POST' || formData.method === 'PUT') && (<><label htmlFor="story">Tell us your story:</label>
+
+          <textarea id="story" name="story" rows="5" cols="33" value='Welcome'/>
+          
+</>)}
       </form>
     </div>
   );
