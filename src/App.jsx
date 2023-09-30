@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import './App.scss';
 
@@ -16,17 +16,34 @@ const App = () => {
   const [appState, setAppState] = useState({
         data: null,
         requestParams: {},
-    })
+    });
+
+
+useEffect(() => {
+  
+  if (!appState.requestParams.url) return;
+  async () => {
+    const url = appState.requestParams.url; 
+    const method = appState.requestParams.method;
+
+    const request = {}
+
+    setAppSate((prev) => ({...prev, data: {} }));
+  
+  }
+}, [appState.requestParams]);
+
+
  const callApi = (requestParams) => {
   
-      const data = {
-        count: 2,
-        results: [
-          {name: 'fake thing 1', url: 'http://fakethings.com/1'},
-          {name: 'fake thing 2', url: 'http://fakethings.com/2'},
-        ],
-      };
-      setAppState({data, requestParams});
+      // const data = {
+      //   count: 2,
+      //   results: [
+      //     {name: 'fake thing 1', url: 'http://fakethings.com/1'},
+      //     {name: 'fake thing 2', url: 'http://fakethings.com/2'},
+      //   ],
+      // };
+      setAppState({data: {}, requestParams});
     }
   return (
     <React.Fragment>

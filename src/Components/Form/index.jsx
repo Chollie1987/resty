@@ -24,14 +24,16 @@ const Form = (props) => {
       <form onSubmit={handleSubmit}>
         <label >
           <span>URL: </span>
-          <input onChange={handleInputChange} name='url' type='text' value={formData.url} />
+          <input 
+          data-testid='formInput'
+          onChange={handleInputChange} name='url' type='text' value={formData.url} />
           <button type="submit">GO!</button>
         </label>
         <label className="methods">
-          <span onClick= {() => handleInputChange({target:{name:'method', value:'GET'}})}id="get">GET</span>
-          <span onClick={() => handleInputChange({target:{name:'method', value:'POST'}})} id="post">POST</span>
-          <span onClick={() => handleInputChange({ target: { name: 'method', value: 'PUT' } })} id="put">PUT</span>
-          <span onClick={() => handleInputChange({ target: { name: 'method', value: 'DELETE' } })} id="delete">DELETE</span>
+          <button onClick= {() => handleInputChange({target:{name:'method', value:'GET'}})}id="get">GET</button>
+          <button onClick={() => handleInputChange({target:{name:'method', value:'POST'}})} id="post">POST</button>
+          <button onClick={() => handleInputChange({ target: { name: 'method', value: 'PUT' } })} id="put">PUT</button>
+          <button onClick={() => handleInputChange({ target: { name: 'method', value: 'DELETE' } })} id="delete">DELETE</button>
         </label>
         {(formData.method === 'POST' || formData.method === 'PUT') && (<><label htmlFor="story">Tell us your story:</label>
 
