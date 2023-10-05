@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer } from 'react';
 
 import './App.scss';
 
@@ -11,31 +11,60 @@ import Footer from './Components/Footer';
 import Form from './Components/Form';
 import Results from './Components/Results';
 
+const initialState = {
+  data: null,
+  requestParams: {},
+  history: [],
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_DATA':
+      return { ...state, data: action.payload, history: [...state.history, action.payload] };
+      case 'SET_REQUEST_PARAMS':
+        return { ...state, requestParams: action.payload };
+        default:
+          return state;
+  }
+}
 
 const App = () => {
-  const [appState, setAppState] = useState({
-        data: null,
-        requestParams: {},
-    });
+  const [appState, dispach] = useReducer(reducer, initialState);
+    
+    };
+
+  // const reducer = (App, action) => {
+  //   switch
+  // }
 
 
 useEffect(() => {
   
   if (!appState.requestParams.url) return;
-  async () => {
+  
+  const getData = async () => {
     const url = appState.requestParams.url; 
     const method = appState.requestParams.method;
 
-    const request = {}
+    try {
+      const response = await get(url, { method });
+      const data = await response.json();
+      dispatchEvent({ type: 'SET_DATA', payload: { data, method, url }});
+    } catch (error) {
+      console.error('Error getting data', error);
+    }
 
-    setAppSate((prev) => ({...prev, data: {} }));
-  
-  }
+  };
+
+    // const request = {}
+
+    // setAppSate((prev) => ({...prev, data: {} }));
+  getData();
 }, [appState.requestParams]);
 
 
  const callApi = (requestParams) => {
-  
+  dispatchEvent({ type: 'SET_REQUEST_PARAMS', payload: requestParams });
       // const data = {
       //   count: 2,
       //   results: [
@@ -43,19 +72,20 @@ useEffect(() => {
       //     {name: 'fake thing 2', url: 'http://fakethings.com/2'},
       //   ],
       // };
-      setAppState({data: {}, requestParams});
-    }
-  return (
-    <React.Fragment>
+      // setAppState({data: {}, requestParams});
+      return (
+        <React.Fragment>
       <Header />
       <div>Request Method: {appState.requestParams.method}</div>
       <div>URL: {appState.requestParams.url}</div>
       <Form handleApiCall={callApi} />
       <Results data={appState.data} />
+      <History history={appState.history} onHistoryClick={handleHistoryClick} />
       <Footer />
     </React.Fragment>
-  )
-}
+  );
+};
+
 
 export default App
 
