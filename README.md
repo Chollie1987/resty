@@ -1,8 +1,23 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Lab 29
 
-Currently, two official plugins are available:
+**Application Flow**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-User enters an API URL.
+
+-Chooses a REST Method.
+
+-Clicks the “Go” button.
+
+-Application fetches data from the URL given, with the  method specified.
+
+-Application stores the API request and returned data into state.
+
+-Updates the list of previous API calls.
+
+-Application Displays the response headers and results separately.
+
+-Both headers and results should be “pretty printed” JSON
+
+*Got the history to render!*
