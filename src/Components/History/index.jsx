@@ -1,4 +1,4 @@
-
+import React from 'react';
 
 const History = ({ history, onHistoryClick}) => {
     return (
@@ -14,3 +14,4 @@ const History = ({ history, onHistoryClick}) => {
         </div>
     );
 };
+export default History;
