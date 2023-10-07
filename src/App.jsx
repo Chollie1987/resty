@@ -1,15 +1,11 @@
 import React, { useEffect, useReducer } from 'react';
-
 import './App.scss';
-
-// Let's talk about using index.js and some other name in the component folder.
-// There's pros and cons for each way of doing this...
-// OFFICIALLY, we have chosen to use the Airbnb style guide naming convention. 
-// Why is this source of truth beneficial when spread across a global organization?
 import Header from './Components/Header';
 import Footer from './Components/Footer';
 import Form from './Components/Form';
 import Results from './Components/Results';
+import History from './Components/History';
+import axios from 'axios';
 
 const initialState = {
   data: null,
@@ -18,111 +14,74 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
-  switch (action.type) {
-    case 'SET_DATA':
-      return { ...state, data: action.payload, history: [...state.history, action.payload] };
-      case 'SET_REQUEST_PARAMS':
-        return { ...state, requestParams: action.payload };
-        default:
-          return state;
+  if (action.type === 'addResults') {
+    return {
+      ...state,
+      data: action.data,
+      history: [...state.history, action.history],
+    };
+  } else if (action.type === 'addParams') {
+    return { ...state, requestParams: action.requestParams, data: {} };
   }
-}
+  return state;
+};
+
 
 const App = () => {
-  const [appState, dispach] = useReducer(reducer, initialState);
-    
-    };
-
-  // const reducer = (App, action) => {
-  //   switch
-  // }
+  const [appState, dispatch] = useReducer(reducer, initialState);
 
 
 useEffect(() => {
-  
-  if (!appState.requestParams.url) return;
-  
   const getData = async () => {
-    const url = appState.requestParams.url; 
-    const method = appState.requestParams.method;
+    if (!appState.requestParams.url) return;
+
+    if (appState.data && Object.keys(appState.data).length) return;
+    console.log('we made it')
+    const {url, method} = appState.requestParams;
+    // const method = appState.requestParams.method;
 
     try {
-      const response = await get(url, { method });
-      const data = await response.json();
-      dispatchEvent({ type: 'SET_DATA', payload: { data, method, url }});
+      const response = await axios.get(url);
+      console.log(response);
+      // const data = await response.json();
+      const historyObj = { url, method, results: response.data };
+      const action = {
+        type: 'addResults',
+        data: response.data,
+        history: historyObj,
+      };
+      dispatch(action);
+      dispatch({ type: 'SET_DATA', payload: { data, method, url } });
     } catch (error) {
       console.error('Error getting data', error);
     }
 
-  };
+};
+getData();
+},[])
 
-    // const request = {}
-
-    // setAppSate((prev) => ({...prev, data: {} }));
-  getData();
-}, [appState.requestParams]);
-
-
- const callApi = (requestParams) => {
-  dispatchEvent({ type: 'SET_REQUEST_PARAMS', payload: requestParams });
-      // const data = {
-      //   count: 2,
-      //   results: [
-      //     {name: 'fake thing 1', url: 'http://fakethings.com/1'},
-      //     {name: 'fake thing 2', url: 'http://fakethings.com/2'},
-      //   ],
-      // };
-      // setAppState({data: {}, requestParams});
-      return (
-        <React.Fragment>
-      <Header />
-      <div>Request Method: {appState.requestParams.method}</div>
-      <div>URL: {appState.requestParams.url}</div>
-      <Form handleApiCall={callApi} />
-      <Results data={appState.data} />
-      <History history={appState.history} onHistoryClick={handleHistoryClick} />
-      <Footer />
-    </React.Fragment>
-  );
+const callApi = (requestParams) => {
+  dispatch({ type: 'addParams', requestParams: requestParams });
 };
 
 
-export default App
+  return (
+    <React.Fragment>
+      <Header />
+      {console.log(appState)}
+      <div>Request Method: {appState.requestParams.method}</div>
+      <div>URL: {appState.requestParams.url}</div>
+      {appState.requestParams.body && (
+        <div>Body: {appState.requestParams.body}</div>
+      )}
+      <Form handleApiCall={callApi} />
+      <Results data={appState.data} />
+      <History history={appState.history} onHistoryClick={(item) => console.log(item)} />
+      <Footer />
+    </React.Fragment>
+  );
 
-// class App extends React.Component {
 
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       data: null,
-//       requestParams: {},
-//     };
-//   }
+};
+export default App;
 
-//   callApi = (requestParams) => {
-//     // mock output
-//     const data = {
-//       count: 2,
-//       results: [
-//         {name: 'fake thing 1', url: 'http://fakethings.com/1'},
-//         {name: 'fake thing 2', url: 'http://fakethings.com/2'},
-//       ],
-//     };
-//     this.setState({data, requestParams});
-//   }
-
-//   render() {
-//     return (
-//       <React.Fragment>
-//         <Header />
-//         <div>Request Method: {this.state.requestParams.method}</div>
-//         <div>URL: {this.state.requestParams.url}</div>
-//         <Form handleApiCall={this.callApi} />
-//         <Results data={this.state.data} />
-//         <Footer />
-//       </React.Fragment>
-//     );
-//   }
-// }
-
-// export default App;
